@@ -1,8 +1,6 @@
 # SimpleCell
 Making Single Cell Simple
 
-# Welcome to Dietune!
-
 
 <h1>Inspiration</h1>
 ...
