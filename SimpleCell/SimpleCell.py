@@ -10,11 +10,6 @@ color1 = "rgb(102,199,244)"
 color2 = "#FBFEF9"
 
 
-gender: List[str] = ["Male", "Female", "Other", "test"]
-fitness: List[str] = ["Fat Loss", "Maintenance", "Muscle Gain"]
-diet: List[str] = ["Low-Fat", "Low-Carb", "Ketogenic (High Fat)"]
-activity: List[str] = ["None: Desk Job etc.", "Light: sitting, standing, etc.", "Moderate: Lifting, continuous activity, etc.", "Cardio/Sports: couple hours a day", "Heavy: very strenuous exercise daily"]
-
 filename = f"{config.app_name}/{config.app_name}.py"
 # ok so this is for the left side block...
 style = {
@@ -45,19 +40,10 @@ style = {
 }
 
 class State(rx.State):
-    complete, processing = False, False
-    gender: str = "No selection yet"
-    fitness: str = "No selection yet"
-    diet: str = "No selection yet"
-    activity: str = "No selection yet"
-    # upload_data 
     
-    form_data: dict = {}
-    
+        
     show: bool = False
 
-    ai_output: List[float]
-    macro_recs: List[float]
     
     #EmbeddedList: List[cellClassifier.ClassifiedCell]
     EmbeddedList: List[str]
@@ -85,19 +71,7 @@ class State(rx.State):
             print(i)
     
 
-    def handle_submit(self, form_data: dict):
-        self.change()
-        yield
-        self.form_data = form_data
-        cal_intake, protein, fat, carbs = 50 , 50 , 50, 50
-        self.macro_recs = [cal_intake, protein, fat, carbs]
-        cal_intake /= 3.0
-        protein /= 3.0
-        fat /= 3
-        carbs /= 3
-
-        
-        self.processing = self.change()
+    
             
 
 
@@ -115,22 +89,6 @@ def navbar():
         border_bottom="1px solid black"
     )
 
-def display_macros():
-
-    return rx.box(
-        rx.text("Calorie intake:"),
-        rx.cond(State.macro_recs[0], rx.text(State.macro_recs[0])),
-
-        rx.text("Protein intake:"),
-        rx.cond(State.macro_recs[1], rx.text(State.macro_recs[1])),
-
-        rx.text("Fat intake:"),
-        rx.cond(State.macro_recs[2], rx.text(State.macro_recs[2])),
-
-        rx.text("Carbs intake:"),
-        rx.cond(State.macro_recs[3], rx.text(State.macro_recs[3])),
-
-    )
 def generate_GPT_form():
 
         return rx.vstack(
@@ -140,14 +98,7 @@ def generate_GPT_form():
                 rx.foreach(
                     State.EmbeddedList, show_info
                 ),
-                # rx.ordered_list(
-                #     rx.foreach(
-                #         State.breakfast_names1, # list of names
-                #         rx.list_item
-                #     ),
-                # ),
-
-                #width="100%",
+                
                 color = 'black',
                 bg = '#FBFEF9',
                 size = '30px',
@@ -161,9 +112,6 @@ def generate_GPT_form():
                 border_radius= "lg",
             )
 
-        # for i in self.EmbeddedList:
-        #     print(i)
-# TODO: SHOW ERROR FOODS
 def show_value(value):
     return rx.vstack(
         rx.text(value, font_size="15px", ),
@@ -190,11 +138,7 @@ def show_info(value):
         height = "50px",
         margin = "50px",
         padding = "50px",
-        # color = rx.cond(
-        #     value.error < 50,
-        #     "green",
-        #     "orange",
-        # ),
+        
         border = "1px solid black",
         border_radius = "md"
     )
@@ -206,22 +150,15 @@ def show_celltype():
         rx.foreach(
             State.outputList, show_value
         ),
-        # rx.ordered_list(
-        #     rx.foreach(
-        #         State.breakfast_names1, # list of names
-        #         rx.list_item
-        #     ),
-        # ),
+        
         rx.button(
             "Get More Information",
             bg="#fef2f2",
             color="#b91c1c",
             border_radius="lg",
-            # padding= 
             on_click=State.generate_GPT(),
         ),
 
-        #width="100%",
         color = 'black',
         bg = '#FBFEF9',
         size = '30px',
@@ -281,54 +218,6 @@ def uploadingfunction():
         border = "3px solid black",
         border_radius= "lg",
     )
-    # return rx.fragment(
-    #     rx.upload(rx.text("Drag and drop files here or click to select files"), rx.icon(tag="upload")),
-    #     rx.button(on_submit=State.<your_upload_handler>)
-    # )
-
-# def form():
-#     return rx.vstack(
-#         rx.form(
-#             rx.vstack(
-#                 rx.heading("Data Input Methodology", size="lg", margin="10px"),
-#                 rx.input(
-#                     placeholder="Copy/Paste your file here",
-#                     id="weight"
-#                 ),
-#                 rx.select(
-    #                 gender,
-    #                 placeholder="Choose Input Method",
-    #                 id="sex",
-    #                 color_schemes="color1",
-    #             ),
-                
-    #             rx.select(
-    #                 activity,
-    #                 placeholder="Text File",
-    #                 id="activity",
-    #                 color_schemes="twitter",
-    #             ),
-    #             rx.button("Submit", type_="submit", color_scheme='pink', is_loading=State.processing),
-    #         ),
-    #         on_submit=State.handle_submit,
-    #     ),
-    #     # x.divider(),
-    #     # TODO: DISPLAY MACRONUTRIENTS
-
-    #     # rx.heading("Macronutrient Recommendation", size="md"),
-    #     # display_macros(),
-    #     color = 'black',
-    #     bg = '#FBFEF9',
-    #     size = '30px',
-    #     height = "100%",
-    #     margin = "20px",
-    #     padding = "30px",
-    #     align_items="top",
-    #     width = "50%",
-    #     radius = "10px",
-    #     border = "3px solid black",
-    #     border_radius= "lg",
-    # )
 
 #Final page design
 @rx.page(title='SimpleCell')
